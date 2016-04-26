@@ -1,0 +1,38 @@
+grammar PigLatin
+  rule phrase
+    ((starts_with_consonates / starts_with_a_vowel) non_word_stuff)* {
+      def to_s
+        elements.map { |e1| e1.elements.map { |e2| e2.to_s }}.flatten.join
+      end
+    }
+  end
+
+  rule starts_with_consonates
+    c1:[^aeiouAEIOU ]+ c2:[a-zA-Z]+ {
+      def to_s
+        translated_word = c2.text_value + c1.text_value + 'ay'
+        if ('A'..'Z').include?(c1.text_value[0])
+          translated_word.capitalize
+        else
+          translated_word
+        end
+      end
+    }
+  end
+
+  rule starts_with_a_vowel
+    c1:[aeiouAEIOU] c2:[a-zA-Z]+ {
+      def to_s
+        c1.text_value + c2.text_value + 'ay'
+      end
+    }
+  end
+
+  rule non_word_stuff
+    [^a-zA-Z]* {
+      def to_s
+        text_value
+      end
+    }
+  end
+end
